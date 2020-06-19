@@ -1,6 +1,6 @@
 from __future__ import print_function
 import tensorflow as tf
-from tensorflow.keras.datasets import cifar100
+from tensorflow.keras.datasets import cifar100, cifar10
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Input
@@ -24,22 +24,19 @@ class LossHistory(tf.keras.callbacks.Callback):
     df = pd.DataFrame({'accuracies' : self.accuracies,
                        'losses'     : self.losses})
 
-    df.to_csv('saved_models/cifar100_callback_conv.csv', header=True, float_format='%g')
+    df.to_csv('saved_models/cifar10_callback_conv_semi.csv', header=True, float_format='%g')
 
 batch_size = 32
-num_classes = 100
+num_classes = 10
 epochs = 100
 
 save_dir = os.path.join(os.getcwd(), 'saved_models')
-model_name = 'saved_models/keras_cifar100_trained_model.h5'
+model_name = 'saved_models/keras_cifar10_trained_model.h5'
 
 # The data, split between train and test sets:
-(x_train, y_train), (x_test, y_test) = cifar100.load_data()
+(x_train, y_train), (x_test, y_test) = cifar10.load_data()
 x_train = x_train.astype('float32') / 255.
 x_test = x_test.astype('float32') / 255.
-print('x_train shape:', x_train.shape)
-print(x_train.shape[0], 'train samples')
-print(x_test.shape[0], 'test samples')
 
 # Input image dimensions
 img_rows, img_cols = 32, 32
@@ -55,12 +52,10 @@ y_test  = tf.keras.utils.to_categorical(y_test, num_classes)
 
 model = Sequential()
 model.add(Input(shape=input_shape))
-# model.add(Conv2D(16, kernel_size=(3, 3),
-#                  activation='relu',
-#                  input_shape=input_shape))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Conv2D(16, kernel_size=(3, 3),
+                 activation='relu',
+                 input_shape=input_shape))
 model.add(Flatten())
-model.add(Dense(32, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 
 model.summary()
@@ -133,8 +128,8 @@ df_history  = pd.DataFrame(hist.history)
 df_callback = pd.DataFrame({'accuracies' : callback.accuracies,
                             'losses'     : callback.losses})
 
-df_history.to_csv('saved_models/cifar100_history_noconv.csv', header=True, float_format='%g')
-df_callback.to_csv('saved_models/cifar100_callback_noconv.csv', header=True, float_format='%g')
+df_history.to_csv('saved_models/cifar10_history_conv.csv', header=True, float_format='%g')
+df_callback.to_csv('saved_models/cifar10_callback_conv.csv', header=True, float_format='%g')
 
 model.save(model_name)
 

@@ -125,4 +125,5 @@ venv.bak/
 .hypothesis/
 
 # specific
-*.pdf
+articoloDL.pdf
+overfittingArticle.pdf
