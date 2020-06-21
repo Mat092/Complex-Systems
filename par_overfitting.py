@@ -31,9 +31,9 @@ class LossHistory(tf.keras.callbacks.Callback):
     df = pd.DataFrame({'accuracies' : self.accuracies,
                        'losses'     : self.losses})
 
-    df.to_csv('saved_models/cifar100_callback_noconv.csv', header=True, float_format='%g')
+    df.to_csv('saved_models/cifar10_callback_noconv.csv', header=True, float_format='%g')
 
-batch_size  = 50
+batch_size  = 100
 num_classes = 10
 
 train_size = 20000 # max 50K
