@@ -20,7 +20,7 @@
 \renewcommand{\baselinestretch}{1,2}
 \title{\Huge{\textbf{Study on Overfitting}} \\ 
                 \vspace{5mm}
-                \large{A review on Overfitting in Deep Learning convolutional models}}
+                \large{A review on Overfitting in Deep Learning  models}}
 \author{Mattia Ceccarelli}
 \date{June 2020}
 
@@ -29,16 +29,16 @@
 
 The project aim is to study how overfitting can represent a problem in common data analisys tasks and how to detect and avoid it in Deep Learning Applications.
 
-The datasets used over the whole study are \textit{MNIST-784}, composed of $70.000$, $28 x 28$ grey-scale images containing hand-written digits; and \textit{CIFAR-100}, composed of $60.000$, $32 x 32$ colored images comprehensive of $100$ classes of objects.
+The datasets used over the whole study are \textit{MNIST-784}, composed of $70.000$, $28 x 28$ grey-scale images containing hand-written digits; and \textit{CIFAR-10}, composed of $60.000$, $32 x 32$ colored images comprehensive of $10$ classes of objects.
 
-The study will also focus on how overfitting is influenced by the numbers of parameters.
+The study will also focus on recent discoveries regarding overfitting in deep learning.
 
 All the data obtained in the case of Deep Learning models are obtained by using the famous python library Tensorflow \cite{tf} 
 
 \section*{Overfitting in data analysis}
 
 In the context of data analysis overfitting is a common problem that arises from different factor. 
-The main cause of overfitting is noise: indeed, by definition, an analytical or statistical model is "overfitted" when the outcome of the algorithm is overly affected by the noise in the data, which means the model begin to describe the random error in the data rather that the relationship between variables.
+The main cause of overfitting is noise: indeed, by definition, an analytical or statistical model is "overfitted" when the outcome of the algorithm is overly affected by the noise in the data, which means the model begin to describe the random error in the data rather than the relationship between variables.
 
 This ordinary but important flaw of machine learning and deep learning model brings a series of consequences that have as a secondary effect to reduce the effectiveness of the model, in particular in data it has never seen before: this phenomenon is called lack of Generalizations capabilities.
 
@@ -71,7 +71,6 @@ The advantages come at the cost of computational efficency.
  
 \end{figure}
 
-
 Other causes for overfitting may come from the dataset: 
 
 \begin{itemize}
@@ -81,6 +80,17 @@ Other causes for overfitting may come from the dataset:
 \end{itemize}
 
 As a rule, a good hypothesis has low generalization error i.e. it works well on examples different from those used in training.
+\\
+\\
+In traditional machine learning methods, the "U-shaped" risk curve in figure \ref{bias-variance-tradeoff} is used to measure the bias-variance trade-offs and quantify how generalizable a model is \cite{weng2019overfit}.
+As the model turns larger (more parameters added), the training error decreases to close to zero, but the test error (generalization error) starts to increase once the model complexity grows to pass the threshold between “underfitting” and “overfitting”
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[scale=0.3]{../images/bias-variance-risk-curve.png}
+ \caption{\textit{Classical view on Bias-Variance Trade-off in deep learning. The ideally trained model comes from a balance between under-fitting and over-fitting. Images from \cite{doubleU}}}  
+ \label{bias-variance-tradeoff}
+\end{figure}
 
 \section*{Overfitting in Deep Learning}
 
@@ -102,34 +112,80 @@ As shown in the graph below, it is clear how, if not monitored, overfitting can 
  \label{cifar-overfit-loss}
 \end{figure}
 
-In figure \ref{cifar-overfit-error} is reported the behaviour of the classification error in the same experiment. The trend is 
+In figure \ref{cifar-overfit-error} is reported the behaviour of the classification error in the same experiment. The trend is clearly different from the previous one and the error stays more or less constant after the model reaches the mininum. 
 
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{../images/cifar10_100epochs_error.png}
-  \caption{\textit{The image shows a common overfitting behaviour in Deep Learning Applications. The classification error in the test set remains almost constant while }}
+  \caption{\textit{The image shows a common overfitting behaviour in Deep Learning Applications. The classification error in the test set remains almost constant while the classification error in the training set tends to zero after the "sweet spot"}}
   \label{cifar-overfit-error}
 \end{figure}
 
 The difference in the two graphs is one of the main reasons why accuracy is not a good target function while training deep learning model and, in general, to report machine learning results. Indeed, it only compares a predicted score $t$ to some cutoff $c$, which is not a proper scoring rule and conceals important information about model fitness.
-Improper scoring rules such as proportions classified correctly, sensitivity, and specificity are not only arbitrary (in choice of threshold) but are improper, i.e., they have the property that maximizing them leads to a bad model, inaccurate predictions, and selecting the wrong features. 
+Improper scoring rules such as proportions accuracy, sensitivity, and specificity are not only arbitrary (in choice of threshold) but are improper, i.e., they have the property that maximizing them leads to bad models, inaccurate predictions, and selecting the wrong features. 
 
 Cross-entropy loss is more viable than accuracy because it is sensitive to "how wrong" the results are: if the label is $1$, but $t=0.9$, the cross-entropy is lower than when the label is $1$ but $t=0.1$.
-The phenomenon when comparing these two graphs - accuracy is flat but loss is increasing - happens because $t>c$.
+The phenomenon when comparing these two graphs, accuracy is flat but loss is increasing, happens because $t>c$.
 
-\section*{Number of Parameters in DL models}
+\newpage
+\section*{Recent Development}
 
-For the current sections, I tested how the number of parameters can influence overfitting in a "simple" dataset such as CIFAR-10. 
-The work is inspired by the paper in \cite{Mit-overfit}. 
+In recent year, the view on overfitting in Deep Learning applications is drastically changing and this is due to new development in the theory of learning.
+Practitioners routinely use modern machine learning methods, such as large neural networks and other non-linear predictors that have very low or zero training risk. In spite of the high function class capacity and near-perfect fit to training data, these predictors often give very accurate predictions on new data. Indeed, this behavior has guided a best practice in deep learning for choosing neural network architectures, specifically that the network should be large enough to permit effortless zero loss training (called interpolation) of the training data. Moreover, in direct challenge to the bias-variance trade-off philosophy, recent empirical evidence indicates that neural networks and kernel machines trained to interpolate the training data obtain near-optimal test results even when the training data are corrupted with high levels of noise. \cite{doubleU}.
 
-\section*{Conclusion}
+In figure \ref{bias-variance-tradeoff-new} is shown the new Risk-Model Complexity curve proposed from the authors of the paper.
 
+\begin{figure}[H]
+ \centering
+ \includegraphics[scale=0.4]{../images/new-curve.png}
+ \caption{\textit{New bias-variance curve proposed in \cite{doubleU}.}}  
+ \label{bias-variance-tradeoff-new}
+\end{figure}
+
+In figure \ref{mnist-b-v} is shown the loss and the miss-classification error during the training of a one hidden-layer fully-connected neural network as a function of the
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[scale=0.4]{../images/new-risk-curve-graph.png}
+ \caption{\textit{Training and evaluation errors of a one hidden layer fc network of different numbers of hidden units, trained on 4000 data points sampled from MNIST. From \cite{doubleU}}}  
+ \label{mnist-b-v}
+\end{figure}
+
+The paper claimed it is likely due to two reasons : 
+
+\begin{itemize}
+ \item [-] The number of parameters is not a good measure of inductive bias, defined as the set of assumptions of a learning algorithm used to predict for unknown samples.
+ 
+ \item [-] Equipped with a larger model, we might be able to discover larger function classes and further find interpolating functions that have smaller norm and are thus “simpler”.
+\end{itemize}
+
+Regularization is a common way to control overfitting and improve model generalization performance. 
+Interestingly some research \cite{rethink} has shown that explicit regularization (such as data augmentation, weight decay and dropout) is neither necessary or sufficient for reducing generalization error.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[scale=0.6]{../images/table_regul.png}
+ \caption{\textit{The training and test accuracy (percentage) of Inception models on the CIFAR10 dataset (in the original paper more models are considered).
+  Performance with and without data augmentation and weight decay are compared. The results of fitting random labels are also included. From \cite{rethink}.}}  
+ \label{table}
+\end{figure}
+
+Two-layer neural networks are universal approximators, so given a sufficiently complex structure, they are able to learn any function. 
+It has been proven that they are able to learn unstructured random noise as well, as shown in \cite{rethink} and \cite{Mit-overfit}. 
+If labels of image classification dataset are randomly shuffled, the high expressivity power of deep neural networks can still empower them to achieve near-zero training loss. 
+These results do not change with regularization terms added. 
+Figure \ref{random-labels} shows some example of this behaviour.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[scale=0.4]{../images/fit-random-labels-zhang.png}
+ \caption{\textit{Fit models on CIFAR10 with random labels or random pixels: (a) learning curves; (b-c) label corruption ratio is the percentage of randomly shuffled labels. Image from \cite{rethink}}}  
+ \label{random-labels}
+\end{figure}
 
 \newpage
 \nocite{*}
-
 \bibliographystyle{abbrv}
 \bibliography{biblio}
-
 
 \end{document}

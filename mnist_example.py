@@ -26,12 +26,7 @@ import numpy as np
 
 class LossHistory(tf.keras.callbacks.Callback):
 
-  def __init__(self, monitor='loss', baseline=0.001):
-
-    self.model.stop_training = False
-
-    self.monitor = monitor
-    self.baseline = baseline
+  def __init__(self):
 
     self.losses         = []
     self.val_losses     = []
@@ -54,10 +49,6 @@ class LossHistory(tf.keras.callbacks.Callback):
     self.pars.append(self.model.count_params())
     self.epochs.append(epoch+1)
 
-    accuracy = logs.get(self.monitor)
-
-    if accuracy >= self.baseline
-      self.model.stop_training = True
 
 # The known number of output classes.
 num_classes = 10
@@ -130,7 +121,7 @@ def num_params(h_units):
   return (784 + 1) * h_units + (h_units + 1) * 10
 
 
-call = train(x_train, y_train, x_test, y_test, np.arange(2, 103, 5), epochs=150)
+call = train(x_train, y_train, x_test, y_test, np.arange(2, 150, 5), epochs=300)
 
 dict = {'loss'         : call.losses,
         'val_loss'     : call.val_losses,
