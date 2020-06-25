@@ -56,19 +56,17 @@ An example of overfitting in analytical method is shown in figure \ref{polyfit} 
  
 \end{figure}
 
-
 Given the fact that noise can't be removed from data a priori, many different techniques has been developed to avoid overfitting. 
-The most widely used is the simple divion between training data and test data, which allow more control over the performances of the models. Figure \ref{scheme} shows some variation of the same concept: keep train and test data separated.
+The most widely used is the simple divsion between training data and test data, which allow more control over the performances of the models. 
+Figure \ref{scheme} shows some variation of the same concept: keep train and test data separated.
 This greatly reduce the risk of overfitting and the introduction of Validation sets helps with the fine-tuning of hyper-parameters. 
 The advantages come at the cost of computational efficency.
 
 \begin{figure}[H]
-
  \centering
  \includegraphics[scale=0.5]{../images/test_train_process.png}
  \caption{\textit{The image show the most common practices in machine learning application to maintain top generalization performances.}}  
  \label{scheme}
- 
 \end{figure}
 
 Other causes for overfitting may come from the dataset: 
@@ -96,6 +94,14 @@ As the model turns larger (more parameters added), the training error decreases 
 
 In deep learning, overfitting is essentially threated the same as for other machine learning metods. 
 It's easy to see how overfitting can appear in simple applications: in figure \ref{cifar-overfit-loss} is shown the charateristic trend of the loss in a overfitting model. 
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[scale=0.4]{../images/cifar10_100epochs_loss.png}
+ \caption{\textit{The image shows a common overfitting behaviour in Deep Learning Applications. The cross entropy loss for the training set keeps a steady descent while the test set loss start increasing.}}  
+ \label{cifar-overfit-loss}
+\end{figure}
+
 In this case, the Gradient Descent is performed on the categorical crossentropy loss, defined as : 
 
 \begin{equation}
@@ -105,12 +111,6 @@ In this case, the Gradient Descent is performed on the categorical crossentropy 
 Where $t_i$ is the true label of the input, while $x_i$ is the predicted label of the input.
 As shown in the graph below, it is clear how, if not monitored, overfitting can and does lead to contradictory results (very good on training set, very bad on test set). 
 
-\begin{figure}[H]
- \centering
- \includegraphics[scale=0.4]{../images/cifar10_100epochs_loss.png}
- \caption{\textit{The image shows a common overfitting behaviour in Deep Learning Applications. The cross entropy loss for the training set keeps a steady descent while the test set loss start increasing.}}  
- \label{cifar-overfit-loss}
-\end{figure}
 
 In figure \ref{cifar-overfit-error} is reported the behaviour of the classification error in the same experiment. The trend is clearly different from the previous one and the error stays more or less constant after the model reaches the mininum. 
 
@@ -127,7 +127,6 @@ Improper scoring rules such as proportions accuracy, sensitivity, and specificit
 Cross-entropy loss is more viable than accuracy because it is sensitive to "how wrong" the results are: if the label is $1$, but $t=0.9$, the cross-entropy is lower than when the label is $1$ but $t=0.1$.
 The phenomenon when comparing these two graphs, accuracy is flat but loss is increasing, happens because $t>c$.
 
-\newpage
 \section*{Recent Development}
 
 In recent year, the view on overfitting in Deep Learning applications is drastically changing and this is due to new development in the theory of learning.
@@ -137,10 +136,12 @@ In figure \ref{bias-variance-tradeoff-new} is shown the new Risk-Model Complexit
 
 \begin{figure}[H]
  \centering
- \includegraphics[scale=0.4]{../images/new-curve.png}
+ \includegraphics[scale=0.5]{../images/new-curve.png}
  \caption{\textit{New bias-variance curve proposed in \cite{doubleU}.}}  
  \label{bias-variance-tradeoff-new}
 \end{figure}
+
+The double descent risk curve, which incorporates te U-shaped risk curve ("classical regime") with the observed behaviour from using high capacity function classes ("modern regime"), seprated by a interpolation threshold. The predictors to the right have zero training risk.
 
 In figure \ref{mnist-b-v} is shown the loss and the miss-classification error during the training of a one hidden-layer fully-connected neural network as a function of the
 
@@ -164,7 +165,7 @@ Interestingly some research \cite{rethink} has shown that explicit regularizatio
 
 \begin{figure}[H]
  \centering
- \includegraphics[scale=0.6]{../images/table_regul.png}
+ \includegraphics[scale=0.55]{../images/table_regul.png}
  \caption{\textit{The training and test accuracy (percentage) of Inception models on the CIFAR10 dataset (in the original paper more models are considered).
   Performance with and without data augmentation and weight decay are compared. The results of fitting random labels are also included. From \cite{rethink}.}}  
  \label{table}
@@ -178,10 +179,29 @@ Figure \ref{random-labels} shows some example of this behaviour.
 
 \begin{figure}[H]
  \centering
- \includegraphics[scale=0.4]{../images/fit-random-labels-zhang.png}
+ \includegraphics[scale=0.46]{../images/fit-random-labels-zhang.png}
  \caption{\textit{Fit models on CIFAR10 with random labels or random pixels: (a) learning curves; (b-c) label corruption ratio is the percentage of randomly shuffled labels. Image from \cite{rethink}}}  
  \label{random-labels}
 \end{figure}
+
+An interesting interpretation of those behaviour is given by the lottery ticket hypothesis \cite{lottery}. The article states that only a subset of network parameters have impact on the model performance and thus the network is not overfitted. The lottery ticket hypothesis suggest that a randomly initialized, dense, feed-forward network contains a pool of subnetworks and among them only a subset are “winning tickets” which can achieve the optimal performance when trained in isolation. Namely : 
+\\
+\\
+``{\bf The Lottery Ticket Hypothesis.} {\it A randomly-initialized, dense neural network contains a subnetwork that is initialized such that — when trained in isolation — it can match the test accuracy of the original network after training for at most the same number of iterations.}'' \cite{lottery}
+\\
+\\
+The paper identify a method to find "winning tickets" : 
+
+\begin{enumerate}
+ \item random initialization of a neural network with parameters $\theta_0$
+ \item Train the net for $j$ iterations, reaching state $\theta_j$
+ \item Prune a percentage of parameters $\theta_j$.
+ \item Reset remaning parameters to values in $\theta_0$, creating the winning ticket
+\end{enumerate}
+
+The authors successfully found "winning tickets" for fully-connected and convolutional structure for MNIST and CIFAR-10 across different optimization strategy (SGD, Momentum and Adam). This hypothesis opens up new ways about interpreting deep neural networks results.
+
+
 
 \newpage
 \nocite{*}
